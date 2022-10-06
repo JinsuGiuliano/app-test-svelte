@@ -12,10 +12,24 @@
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"@types/jquery": "^3.5.14",
+		"autoprefixer": "^10.4.12",
+		"postcss": "^8.4.17",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
 		"svelte": "^3.44.0",
+		"svelte-preprocess": "^4.10.7",
+		"tailwindcss": "^3.1.8",
 		"vite": "^3.1.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@sveltejs/adapter-node": "^1.0.0-next.96",
+		"axios": "^1.0.0",
+		"daisyui": "^2.31.0",
+		"datatables.net": "^1.12.1",
+		"datatables.net-dt": "^1.12.1",
+		"jsdom": "^20.0.1",
+		"svelte-simple-datatables": "^0.2.3"
+	}
 }
