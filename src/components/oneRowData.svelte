@@ -1,5 +1,5 @@
 <script>
-	import { afterUpdate, beforeUpdate, onMount } from "svelte";
+	import { onMount } from "svelte";
     import BinanceData, { fetchBinanceBySymbolData }  from '../lib/stores/dataStore'
 
     export let Symbol;

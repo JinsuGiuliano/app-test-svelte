@@ -2,17 +2,16 @@
 
 <script>
   import { onMount, beforeUpdate, afterUpdate } from 'svelte';
-  import BinanceData, { fetchBinanceBySymbolData, fetchBinanceData, BinanceDataFiltered, Filters  } from '../lib/stores/dataStore'
+  import BinanceData, { fetchBinanceBySymbolData, fetchBinanceData,SearchTerm, Filters, filterBinanceDataAction, BinanceDataFiltered  } from '../lib/stores/dataStore'
   import MultipleSelection from './MultipleSelection.svelte';
   import OneRowData from './oneRowData.svelte';
 
 let columns = ['details','symbol','status','baseAsset' ,'baseAssetPrecision','quoteAsset','quotePrecision' ,'quoteAssetPrecision', 
   'icebergAllowed','ocoAllowed','isSpotTradingAllowed','isMarginTradingAllowed']
 
-$: options = ['iceberg', 'oco', 'SpotTrading', 'MarginTrading']
-$: data = $Filters.length? $BinanceDataFiltered : $BinanceData.complete
+$: filteredData = $BinanceDataFiltered
 $: rowD =  $BinanceData.bySymbol;
-$: search = undefined;
+$: search = $SearchTerm
 let OneRowDataSelected = false
 let Symbol = ''
 
@@ -22,25 +21,32 @@ let Symbol = ''
     Symbol = sym
 }
 
-$: filteredData = search ?
-		data.filter(row => {
-			return row.symbol.match(`${search}.*`) || user.status.match(`${search}.*`) || user.baseAsset.match(`${search}.*`) ||  user.baseAssetPrecision.match(`${search}.*`) ||  
-      user.quoteAsset.match(`${search}.*`) ||  user.quotePrecision.match(`${search}.*`) ||  user.quoteAssetPrecision.match(`${search}.*`) ||
-      user.icebergAllowed.match(`${search}.*`) || user.ocoAllowed.match(`${search}.*`) ||  user.isSpotTradingAllowed.match(`${search}.*`) || user.isMarginTradingAllowed.match(`${search}.*`)
-    }) : data;
-
-
-
 	onMount(async () => {
     await fetchBinanceData()
 	})
 
 
-  console.log('BinanceData: ', $BinanceData)
+
+// = search ?
+// 		data.filter(row => {
+// 			return row.symbol.match(`${search}.*`) || user.status.match(`${search}.*`) || user.baseAsset.match(`${search}.*`) ||  user.baseAssetPrecision.match(`${search}.*`) ||  
+//       user.quoteAsset.match(`${search}.*`) ||  user.quotePrecision.match(`${search}.*`) ||  user.quoteAssetPrecision.match(`${search}.*`) ||
+//       user.icebergAllowed.match(`${search}.*`) || user.ocoAllowed.match(`${search}.*`) ||  user.isSpotTradingAllowed.match(`${search}.*`) || user.isMarginTradingAllowed.match(`${search}.*`)
+//     }) : data;
+
+// beforeUpdate(()=>{
+//   filteredData = $Filters 
+//   ? filterBinanceDataAction(data, $Filters )
+//   : data
+// })
+
+
+
 
 </script>
+<MultipleSelection  bind:search={search}/>
 
-<div class="overflow-x-auto">
+<div class="overflow-x-auto mt-20">
 <div class="overflow-x-auto">
   
   <table class="table table-compact ">
@@ -79,5 +85,4 @@ $: filteredData = search ?
   {#if Symbol}
       <OneRowData bind:Symbol={Symbol} bind:rowData={rowD}/>   
   {/if}
-<MultipleSelection  bind:search={search} bind:options={options}/>
 </div>

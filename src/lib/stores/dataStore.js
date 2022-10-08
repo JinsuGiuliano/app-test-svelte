@@ -8,32 +8,57 @@ const BinanceData = writable({
 
 export const Filters = writable([]);
 
-export const BinanceDataFiltered = derived([BinanceData, Filters], ([$BinanceData, $Filters]) => {
-	let fiteredList = $BinanceData.complete
-		.map((data) => data.permissions.map((f) => $Filters.includes(f)) && data)
-		.filter(Boolean);
-	console.log('BinanceDataFiltered: ', BinanceDataFiltered);
-	return fiteredList;
-});
+export const SearchTerm = writable('');
 
+export const BinanceDataFiltered = derived(
+	[BinanceData, Filters, SearchTerm],
+	([$BinanceData, $Filters, $SearchTerm]) => {
+		return filterBySearchTerm(filterByFilters($BinanceData.complete, $Filters), $SearchTerm);
+	}
+);
+
+// ACTION FOR BINANCE_FILTERED_DATA
+function filterByFilters(data, filters) {
+	if (!filters.length) return data;
+	let filteredData = data.filter((row) => {
+		let keys = Object.keys(row);
+		let elm = keys.find((k) => filters.includes(k));
+		return row[elm];
+	});
+	console.log('filterByFilters: ', { data: filteredData, filters: filters });
+	return filteredData;
+}
+
+function filterBySearchTerm(data, searchTerm) {
+	// console.log('filterBySearchTerm: ', data, searchTerm);
+	if (!searchTerm) return data;
+	const formattedTerm = searchTerm.toLowerCase().trim();
+
+	return data.filter((row) => {
+		const AtrrValues = Object.values(row);
+
+		return AtrrValues.includes(formattedTerm);
+	});
+}
+
+// ACTIONS FOR FILTER
 export const addFilter = (el) => {
-	console.log('ACTION ADD FILTER');
 	Filters.update(($Filters) => {
 		$Filters.push(el);
-		console.log('Filters', $Filters);
+		console.log('ACTION ADD FILTER', $Filters);
 		return $Filters;
 	});
 };
 
 export const removeFilter = (el) => {
-	console.log('ACTION REMOVE FILTER');
 	Filters.update(($Filters) => {
 		$Filters = $Filters.filter((e) => e !== el);
-		console.log('Filters', $Filters);
+		console.log('ACTION REMOVE FILTER', $Filters);
 		return $Filters;
 	});
 };
 
+// ACTIONS FOR BINANCEDATA
 export const fetchBinanceData = async () => {
 	console.log('AXIOS GET COMPLETE BINANCE DATA');
 	await axios
@@ -69,5 +94,18 @@ export function getBinanceDataBySymbolAction(fetch) {
 		return $BinanceData;
 	});
 }
+
+export const filterBinanceDataAction = (data, Filters) => {
+	// const filtered = data
+	// 	.map((row) => (row.map((atributte) => Filters.includes(atributte)) ? row : false))
+	// 	.filter(Boolean);
+	// console.log('ACTION_FILTER_DATA_BINANCE: ', filtered);
+	BinanceData.update(($BinanceData) => {
+		$BinanceData.bySymbol = fetch;
+		console.log('getBinanceDataBySymbolAction', $BinanceData);
+		return $BinanceData;
+	});
+	// return filtered;
+};
 
 export default BinanceData;

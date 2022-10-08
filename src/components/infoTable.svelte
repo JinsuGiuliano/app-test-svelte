@@ -1,20 +1,20 @@
 <script>
-
-
-  	import { afterUpdate, beforeUpdate, onMount, tick,  } from 'svelte'
-    
-  let apiData = []
-
-  let columns = ['symbol','status','baseAsset' ,'baseAssetPrecision','quoteAsset','quotePrecision' ,'quoteAssetPrecision', 
+	import jQuery from 'jquery'
+	import { afterUpdate, beforeUpdate, onMount, tick } from 'svelte'
+  import {  fetchBinanceData, BinanceDataFiltered  } from '../lib/stores/dataStore'
+	let columns = ['details','symbol','status','baseAsset' ,'baseAssetPrecision','quoteAsset','quotePrecision' ,'quoteAssetPrecision', 
   'icebergAllowed','ocoAllowed','isSpotTradingAllowed','isMarginTradingAllowed']
+	let el // table element
+	let table // table object (API)
+	
+	const dataPromise = $BinanceDataFiltered
+	
 
-  
-  onMount(async () => {
-   apiData = await fetch('https://api.binance.com/api/v3/exchangeInfo')
-  .then( res => res.json())
-  .then( val =>  val.symbols )
+	onMount(async () => {
+    await fetchBinanceData()
+		table = jQuery(el).setTable()
+	
 	})
-
 </script>
 
 <svelte:head>
@@ -25,8 +25,7 @@
   <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 </svelte:head>
 
-{#if apiData}
-<table id="example" class="table table-striped" style="width:100%">
+<table bind:this={el} id="example" class="table table-striped" style="width:100%">
   <thead>
     <tr>
       {#each columns as colum, i }
@@ -35,7 +34,7 @@
     </tr>
   </thead>
   <tbody>
- {#each apiData as data }
+ {#each dataPromise as data }
  <tr>
   {#each columns as column}
         <td>{data[column]}</td>
@@ -52,6 +51,3 @@
     </tr>
   </tfoot>
 </table>
-{:else}
-<div class="radial-progress text-primary" style="--value:70;">70%</div>
-{/if}

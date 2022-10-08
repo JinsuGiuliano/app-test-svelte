@@ -5,6 +5,7 @@
 	import DaisyTable from './tabledaisy.svelte'
 	import MarketGraph from './MarketGraph.svelte'
 	import { onMount } from "svelte";
+	import InfoTable from "./infoTable.svelte";
 
   	let showMarket = false
 
@@ -20,6 +21,7 @@
 		<Tabs/>
 		<div class="card lg:card-side bg-base-100 shadow-xl">
                 <DaisyTable/>
+				<!-- <InfoTable/> -->
 		</div>
 		{:else}
 		<div class="card lg:card-side bg-base-100 shadow-xl">
