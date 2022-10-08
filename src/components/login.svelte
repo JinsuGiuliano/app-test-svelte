@@ -1,12 +1,13 @@
 <script>
-  import { loginAction } from '../lib/stores/UserStore.js'
-  
-$: user = { email:'', password:'' }
+import { loginAction } from '../lib/stores/UserStore.js'
+
+export let userStore;
  
-function login(){
-  console.log('login: ', user)
-  loginAction(user.email, user.password )
-};
+// function login(){
+//   console.log('login: ', user)
+  
+// };
+console.log('Login Page: ', userStore)
 
 </script>
 
@@ -20,21 +21,21 @@ function login(){
           <label class="label">
             <span class="label-text">Email</span>
           </label>
-          <input name="email" bind:value={user.email} type="text" placeholder="email" class="input input-bordered" required/>
+          <input name="email" bind:value={userStore.profile.email} type="text" placeholder="email" class="input input-bordered" required/>
         </div>
         <div class="form-control">
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="label">
             <span class="label-text">Password</span>
           </label>
-          <input name="password" bind:value={user.password}  type="password" placeholder="password" class="input input-bordered" required/>
+          <input name="password" bind:value={userStore.profile.password}  type="password" placeholder="password" class="input input-bordered" required/>
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="label">
             <a href="#ass" class="label-text-alt link link-hover">Forgot password?</a>
           </label>
         </div>
         <div class="form-control mt-6">
-          <button class="btn btn-primary" on:click={login}>Login</button>
+          <a href="/"><button class="btn btn-primary" on:click={()=> loginAction(userStore.profile.email, userStore.profile.password, true )}>Login</button></a>
         </div>
       </div>
     </div>

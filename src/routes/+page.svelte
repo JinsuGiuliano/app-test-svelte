@@ -3,18 +3,23 @@
     import Login from "../components/login.svelte";
     import Main from "../components/main.svelte";
 	import { onMount } from 'svelte';
+  console.log($userStore)
 
+let logged = $userStore.profile.logged
 
-// onMount(()=>{
-// if (window && window.sessionStorage) {
-//     user = JSON.parse(localStorage.getItem('user')) }
-// })
+	let user;
+
+	onMount(()=>{
+		user = localStorage.getItem('user')
+
+	})
+
 </script>
 
 
-{#if $userStore.logged}
+{#if logged || user }
      <Main/>  
 {:else}
-  <Login/>
+  <Login bind:userStore={$userStore}/>
 {/if}
 

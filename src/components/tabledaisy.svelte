@@ -1,23 +1,25 @@
 
 
 <script>
-  import { afterUpdate, beforeUpdate, onMount } from 'svelte';
+  import { onMount, beforeUpdate, afterUpdate } from 'svelte';
+  import BinanceData, { fetchBinanceBySymbolData, fetchBinanceData, BinanceDataFiltered, Filters  } from '../lib/stores/dataStore'
   import MultipleSelection from './MultipleSelection.svelte';
   import OneRowData from './oneRowData.svelte';
-  import axios from 'axios';
 
-let columns = ['symbol','status','baseAsset' ,'baseAssetPrecision','quoteAsset','quotePrecision' ,'quoteAssetPrecision', 
+let columns = ['details','symbol','status','baseAsset' ,'baseAssetPrecision','quoteAsset','quotePrecision' ,'quoteAssetPrecision', 
   'icebergAllowed','ocoAllowed','isSpotTradingAllowed','isMarginTradingAllowed']
-let options = ['iceberg', 'oco', 'SpotTrading', 'MarginTrading']
-let data = [];
-let search = undefined;
-let OneData = {}
+
+$: options = ['iceberg', 'oco', 'SpotTrading', 'MarginTrading']
+$: data = $Filters.length? $BinanceDataFiltered : $BinanceData.complete
+$: rowD =  $BinanceData.bySymbol;
+$: search = undefined;
 let OneRowDataSelected = false
+let Symbol = ''
 
 
- function handleOneRow (d){
-    OneData = d
-    OneRowDataSelected = true
+ async function handleOneRow (sym){
+    await fetchBinanceBySymbolData(sym)
+    Symbol = sym
 }
 
 $: filteredData = search ?
@@ -27,49 +29,44 @@ $: filteredData = search ?
       user.icebergAllowed.match(`${search}.*`) || user.ocoAllowed.match(`${search}.*`) ||  user.isSpotTradingAllowed.match(`${search}.*`) || user.isMarginTradingAllowed.match(`${search}.*`)
     }) : data;
 
-export const fetchBinanceData = async () => {
-	try {
-		await axios
-			.get('https://api.binance.com/api/v3/exchangeInfo', {
-				headers: {},
-				params: {}
-			})
-			.then((res) => {
-        let list = res.data.symbols
-        data = list.splice(11, list.length)
-      });
-	} catch (err) {
-		console.log(err);
-	}
-};
+
 
 	onMount(async () => {
-  await fetchBinanceData()
+    await fetchBinanceData()
 	})
 
 
+  console.log('BinanceData: ', $BinanceData)
 
 </script>
 
 <div class="overflow-x-auto">
 <div class="overflow-x-auto">
   
-  <table class="table table-compact w-full ">
+  <table class="table table-compact ">
     <!-- head -->
     <thead>
   
     <tr>
-      {#each columns as colum, i }
-        <th  name={columns.symbol} id={i}>{colum}</th>
+      {#each columns as column, i }
+        <th  name={column === 'details'? 'details' :columns.symbol} id={i+1}>{column}</th>
       {/each}
     </tr>
     </thead>
    <tbody>
- {#each filteredData as dat, i }
+ {#each filteredData as row, i }
  {#if i < 11}
- <tr class=" hover " on:click={()=> handleOneRow(dat)}>
+ <tr class="hover" on:click={()=> handleOneRow(row.symbol)} >
   {#each columns as column}
-        <th >{dat[column]}</th>
+  {#if column === 'details'}
+  <th  > 
+    <a href="#my-modal-2" >
+    <input type="radio" name="radio-4" class="radio radio-accent" checked={OneRowDataSelected} />
+  </a>
+    </th> 
+  {:else}
+        <th >{row[column]}</th>
+  {/if}
   {/each}
   </tr>
   {/if}
@@ -79,8 +76,8 @@ export const fetchBinanceData = async () => {
   </table>
   
 </div>
-{#if OneRowDataSelected}
-  <OneRowData data={OneData}/>
-{/if}
+  {#if Symbol}
+      <OneRowData bind:Symbol={Symbol} bind:rowData={rowD}/>   
+  {/if}
 <MultipleSelection  bind:search={search} bind:options={options}/>
 </div>

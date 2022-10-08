@@ -2,12 +2,11 @@
     
     import SideBar from "./sideBar.svelte";
     import Tabs from "./tabs.svelte";
-    // import InfoTable from "./infoTable.svelte";
 	import DaisyTable from './tabledaisy.svelte'
-import MarketGraph from './MarketGraph.svelte'
+	import MarketGraph from './MarketGraph.svelte'
+	import { onMount } from "svelte";
 
-  let showMarket = false
-
+  	let showMarket = false
 
   </script>
   
@@ -17,9 +16,6 @@ import MarketGraph from './MarketGraph.svelte'
 
    <SideBar bind:showMarket={showMarket}/>
    <main>
-        
-
-        
 		{#if !showMarket}
 		<Tabs/>
 		<div class="card lg:card-side bg-base-100 shadow-xl">

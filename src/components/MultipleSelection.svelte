@@ -1,14 +1,14 @@
 <script>
+import { Filters, addFilter, removeFilter } from '../lib/stores/dataStore'
 
- export let options;
+export let options;
 export let search;
-$: selectedOptions = []
+ 
 
-function onSelectOption(e){
-    console.log('onSelectOption: ', e)
-        selectedOptions.includes(e)
-        ? selectedOptions.push(e)
-        : selectedOptions.filter(i => i !== e)
+function onSelectOption(opt){
+        $Filters.includes(opt)
+        ? removeFilter(opt)
+        : addFilter(opt)
 }
 
 
@@ -26,9 +26,11 @@ function onSelectOption(e){
 </div>
 <div class="dropdown dropdown-top">
   <label tabindex="0" class="btn m-1">Filter by Order type</label>
-  <ul tabindex="0" class="dropdown-content menu p-0 shadow bg-base-100 rounded-box w-25">
+  <ul tabindex="0" class="dropdown-content menu p-0  rounded-box w-25">
     {#each options as opt }
-        <button class={`btn ${selectedOptions.includes(opt) && 'btn-active'}`} on:click={()=>onSelectOption(opt)}>{opt}</button>
+    <div on:click={()=>onSelectOption(opt)} class={`my-1 py-2 badge badge-${$Filters.includes(opt)?'success':'warning'} gap-2`}>
+       {opt}
+    </div>
     {/each}
   </ul>
 </div>
