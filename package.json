@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"buildNode": "HOST=127.0.0.1 PORT=4000 node build",
 		"preview": "vite preview",
 		"lint": "prettier --plugin-search-dir . --check .",
 		"format": "prettier --plugin-search-dir . --write ."
@@ -24,12 +25,16 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@macfja/svelte-persistent-store": "^2.1.0",
 		"@sveltejs/adapter-node": "^1.0.0-next.96",
 		"axios": "^1.0.0",
 		"daisyui": "^2.31.0",
 		"datatables.net": "^1.12.1",
-		"datatables.net-dt": "^1.12.1",
+		"datatables.net-dt": "latest",
+		"fusioncharts": "^3.19.0",
+		"jquery": "latest",
 		"jsdom": "^20.0.1",
+		"svelte-fusioncharts": "^1.0.0",
 		"svelte-simple-datatables": "^0.2.3"
 	}
 }

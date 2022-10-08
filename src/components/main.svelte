@@ -2,19 +2,35 @@
     
     import SideBar from "./sideBar.svelte";
     import Tabs from "./tabs.svelte";
-    import InfoTable from "./infoTable.svelte";
+    // import InfoTable from "./infoTable.svelte";
+	import DaisyTable from './tabledaisy.svelte'
+import MarketGraph from './MarketGraph.svelte'
+
+  let showMarket = false
+
+
   </script>
   
   
   
   <div class="app">
 
-   <SideBar/>
+   <SideBar bind:showMarket={showMarket}/>
    <main>
-        <Tabs/>
-        <div class="card lg:card-side bg-base-100 shadow-xl">
-                <InfoTable/>
-        </div>
+        
+
+        
+		{#if !showMarket}
+		<Tabs/>
+		<div class="card lg:card-side bg-base-100 shadow-xl">
+                <DaisyTable/>
+		</div>
+		{:else}
+		<div class="card lg:card-side bg-base-100 shadow-xl">
+            <MarketGraph/>
+			</div>
+		{/if}
+		 
   </main>
   </div>
 

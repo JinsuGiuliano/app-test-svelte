@@ -3,25 +3,6 @@ import axios from 'axios';
 
 let values;
 
-// const createWritableStore = (key, startValue) => {
-// 	const { subscribe, set } = writable(startValue);
-
-// 	return {
-// 		subscribe,
-// 		set,
-// 		useLocalStorage: () => {
-// 			const json = localStorage.getItem(key);
-// 			if (json) {
-// 				set(JSON.parse(json));
-// 			}
-
-// 			subscribe((current) => {
-// 				localStorage.setItem(key, JSON.stringify(current));
-// 			});
-// 		}
-// 	};
-// };
-
 export const fetchBinanceData = async () => {
 	try {
 		await axios
