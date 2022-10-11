@@ -16,7 +16,7 @@ function onSelectOption(opt){
 <div class=" ">
     <div class="dropdown dropdown-down">
   <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label tabindex="0" class="btn m-1 "> Search </label>
+  <label tabindex="0" class="btn glass m-1 "> Search </label>
   <ul tabindex="0" class="dropdown-content menu p-0 shadow bg-base-200 rounded-box w-52">
     <div class="form-control ">
       <input type="text" bind:value={$SearchTerm} placeholder="Search by text" class="input input-bordered z-50" />
@@ -25,7 +25,7 @@ function onSelectOption(opt){
 </div>
 <div class="dropdown dropdown-right dropdown-end ">
   <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label tabindex="0" class="btn m-1">Filter by Order type</label>
+  <label tabindex="0" class="btn glass m-1">Filter by Order type</label>
   <ul tabindex="0" class="dropdown-content menu p-0  rounded-box w-25">
     <div class="flex flex-row mb-3">
     {#each options as opt }

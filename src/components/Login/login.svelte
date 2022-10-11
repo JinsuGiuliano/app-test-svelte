@@ -1,7 +1,5 @@
 <script>
-    import { loginAction } from '../../stores/UserStore.js'
-
-    export let userStore;
+    import userStore, { loginAction } from '../../stores/UserStore.js'
 </script>
 
 
@@ -14,21 +12,21 @@
           <label class="label">
             <span class="label-text">Email</span>
           </label>
-          <input name="email" bind:value={userStore.profile.email} type="text" placeholder="email" class="input input-bordered" required/>
+          <input name="email" bind:value={$userStore.profile.email} type="text" placeholder="email" class="input input-bordered" required/>
         </div>
         <div class="form-control">
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="label">
             <span class="label-text">Password</span>
           </label>
-          <input name="password" bind:value={userStore.profile.password}  type="password" placeholder="password" class="input input-bordered" required/>
+          <input name="password" bind:value={$userStore.profile.password}  type="password" placeholder="password" class="input input-bordered" required/>
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="label">
             <a href="#ass" class="label-text-alt link link-hover">Forgot password?</a>
           </label>
         </div>
         <div class="form-control mt-6">
-          <a href="/"><button class="btn btn-primary" on:click={()=> loginAction(userStore.profile.email, userStore.profile.password, true )}>Login</button></a>
+          <a href="/"><button class="btn btn-primary" on:click={()=> loginAction($userStore.profile.email, $userStore.profile.password, true )}>Login</button></a>
         </div>
       </div>
     </div>

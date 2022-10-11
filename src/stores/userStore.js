@@ -1,15 +1,21 @@
 import { writable } from 'svelte/store';
 
 const userStore = writable({
-	profile: {},
+	profile: {
+		email: '',
+		password: '',
+		logged: false
+	},
 	redirect: '',
 	notifications: {}
 });
 
 export const loginOutAction = () => {
 	console.log('ACTION LOGOUT');
+
 	userStore.update(($userStore) => {
 		$userStore.profile = { email: '', password: '', logged: false };
+		localStorage.setItem('user', '');
 		return $userStore;
 	});
 };

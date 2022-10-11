@@ -1,7 +1,7 @@
   <script>
     
     import SideBar from "./Menu/sideBar.component.svelte";
-    import Tabs from "./Exchange/tabs.svelte";
+    import Tabs from "./Menu/tabs.svelte";
 	import DaisyTable from './Exchange/exchange.table.svelte'
 	import AllMarketDetails from "./Market/AllMarket.view.svelte";
 	import sideBarState from '../stores/sideBarStore'

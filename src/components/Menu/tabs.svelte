@@ -1,21 +1,25 @@
 <script>
   import userStore,{ loginOutAction }from '../../stores/UserStore.js'
-  import MultipleSelection from './MultipleSelection.component.svelte';
+  import MultipleSelection from '../Exchange/MultipleSelection.component.svelte';
+
+let user = JSON.parse(localStorage.getItem('user'))? JSON.parse(localStorage.getItem('user')): userStore
+
 </script>
+
   <div class="flex flex-row justify-between">
     <div>
   <MultipleSelection />
     </div>
     <div class="dropdown dropdown-end">
       <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
-          <img src="https://placeimg.com/80/80/people" />
+        <div class="w-24 rounded">
+          <img src="/img/logo.png" />
         </div>
       </label>
        <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
         <li>
           <a class="justify-between">
-            {$userStore.email}
+            {$userStore.profile.email}
           </a>
         </li>
         <li  on:click={()=>loginOutAction()}><a>Logout</a></li>
