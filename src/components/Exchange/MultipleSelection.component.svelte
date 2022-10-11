@@ -1,38 +1,47 @@
 <script>
-import { Filters, addFilter, removeFilter } from '../lib/stores/dataStore'
-
+import { Filters, addFilter, removeFilter } from '../../stores/dataStore'
+import {  SearchTerm } from '../../stores/dataStore'
 
 let options = ['icebergAllowed', 'ocoAllowed', 'isSpotTradingAllowed', 'isMarginTradingAllowed']
-export let search;
 
 function onSelectOption(opt){
+  console.log('onSelectOption: ', $Filters, opt)
         $Filters.includes(opt)
         ? removeFilter(opt)
         : addFilter(opt)
 }
 
+
 </script>
-<div class="fixed z-50 ">
+<div class=" ">
     <div class="dropdown dropdown-down">
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label tabindex="0" class="btn m-1 "> Search </label>
   <ul tabindex="0" class="dropdown-content menu p-0 shadow bg-base-200 rounded-box w-52">
     <div class="form-control ">
-      <input type="text" bind:value={search} placeholder="Search" class="input input-bordered z-50" />
+      <input type="text" bind:value={$SearchTerm} placeholder="Search by text" class="input input-bordered z-50" />
     </div>
   </ul>
 </div>
-<div class="dropdown dropdown-right dropdown-end">
+<div class="dropdown dropdown-right dropdown-end ">
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <label tabindex="0" class="btn m-1">Filter by Order type</label>
   <ul tabindex="0" class="dropdown-content menu p-0  rounded-box w-25">
+    <div class="flex flex-row mb-3">
     {#each options as opt }
-    <div on:click={()=>onSelectOption(opt)} class={`cursor-pointer badge badge${$Filters.includes(opt)?'-success':'-warning'} gap-3 my-1 py-2`}>
+    {#if $Filters.includes(opt)}
+    <div on:click={()=>onSelectOption(opt)} class="cursor-pointer badge badge-success gap-3 m-1 py-2">
        {opt}
     </div>
+    {:else}
+      <div on:click={()=>onSelectOption(opt)} class="cursor-pointer badge badge gap-3 m-1 py-2">
+          {opt}
+        </div>
+    {/if}
     {/each}
+    </div>
   </ul>
-</div>
 
+</div>
 
 </div>

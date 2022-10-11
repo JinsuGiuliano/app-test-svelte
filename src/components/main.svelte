@@ -1,32 +1,32 @@
   <script>
     
-    import SideBar from "./sideBar.svelte";
-    import Tabs from "./tabs.svelte";
-	import DaisyTable from './tabledaisy.svelte'
-	import MarketGraph from './MarketGraph.svelte'
-	import { onMount } from "svelte";
-	import InfoTable from "./infoTable.svelte";
-
+    import SideBar from "./Menu/sideBar.component.svelte";
+    import Tabs from "./Exchange/tabs.svelte";
+	import DaisyTable from './Exchange/exchange.table.svelte'
+	import AllMarketDetails from "./Market/AllMarket.view.svelte";
+	import sideBarState from '../stores/sideBarStore'
+	import BinanceData,{ PercentageLoaded } from '../stores/dataStore'
   	let showMarket = false
-
+	
   </script>
-  
+
   
   
   <div class="app">
 
    <SideBar bind:showMarket={showMarket}/>
    <main>
-		{#if !showMarket}
+		{#if !$sideBarState.marketGraph}
 		<Tabs/>
-		<div class="card lg:card-side bg-base-100 shadow-xl">
+		<div class="card  bg-base-100 shadow-xl">
+			<progress class="progress progress-success w-full" value={`${$PercentageLoaded}`} max={`${$BinanceData.complete.length}`}></progress>
+
                 <DaisyTable/>
-				<!-- <InfoTable/> -->
 		</div>
 		{:else}
-		<div class="card lg:card-side bg-base-100 shadow-xl">
-            <MarketGraph/>
-			</div>
+		<div class="card   w-max-full shadow-xl">
+			<AllMarketDetails/>
+		</div>
 		{/if}
 		 
   </main>
@@ -43,7 +43,7 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		padding: 1rem;
+		padding: 2px;
 		width: 100%;
 		max-width: 64rem;
 		margin: 0 auto;

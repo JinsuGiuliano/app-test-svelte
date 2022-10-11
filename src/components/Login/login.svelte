@@ -1,14 +1,7 @@
 <script>
-import { loginAction } from '../lib/stores/UserStore.js'
+    import { loginAction } from '../../stores/UserStore.js'
 
-export let userStore;
- 
-// function login(){
-//   console.log('login: ', user)
-  
-// };
-console.log('Login Page: ', userStore)
-
+    export let userStore;
 </script>
 
 

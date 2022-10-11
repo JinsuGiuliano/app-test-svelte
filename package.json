@@ -26,15 +26,20 @@
 	"type": "module",
 	"dependencies": {
 		"@macfja/svelte-persistent-store": "^2.1.0",
+		"@observablehq/plot": "^0.6.0",
 		"@sveltejs/adapter-node": "^1.0.0-next.96",
 		"axios": "^1.0.0",
+		"binance": "^2.1.2",
+		"d3": "^7.6.1",
 		"daisyui": "^2.31.0",
 		"datatables.net": "^1.12.1",
 		"datatables.net-dt": "latest",
 		"fusioncharts": "^3.19.0",
 		"jquery": "latest",
 		"jsdom": "^20.0.1",
+		"lightweight-charts": "^3.8.0",
 		"svelte-fusioncharts": "^1.0.0",
+		"svelte-lightweight-charts": "^1.7.0-next.0",
 		"svelte-simple-datatables": "^0.2.3"
 	}
 }

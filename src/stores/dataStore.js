@@ -6,6 +6,10 @@ const BinanceData = writable({
 	bySymbol: []
 });
 
+export const SymbolList = derived(BinanceData, ($BinanceData) => {
+	return $BinanceData.complete.map((row) => row.symbol);
+});
+
 export const Filters = writable([]);
 
 export const SearchTerm = writable('');
@@ -13,39 +17,51 @@ export const SearchTerm = writable('');
 export const BinanceDataFiltered = derived(
 	[BinanceData, Filters, SearchTerm],
 	([$BinanceData, $Filters, $SearchTerm]) => {
-		return filterBySearchTerm(filterByFilters($BinanceData.complete, $Filters), $SearchTerm);
+		let filteredData = filterBySearchTerm(
+			filterByFilters($BinanceData.complete, $Filters),
+			$SearchTerm
+		);
+		return filteredData;
+	}
+);
+
+export const PercentageLoaded = derived(
+	[BinanceData, BinanceDataFiltered],
+	([$BinanceData, $BinanceDataFiltered]) => {
+		return $BinanceDataFiltered.length
+			? parseInt(($BinanceData.complete.length * $BinanceDataFiltered.length) / 100)
+			: 100;
 	}
 );
 
 // ACTION FOR BINANCE_FILTERED_DATA
 function filterByFilters(data, filters) {
 	if (!filters.length) return data;
-	let filteredData = data.filter((row) => {
-		let keys = Object.keys(row);
-		let elm = keys.find((k) => filters.includes(k));
-		return row[elm];
+	return data.filter((row) => {
+		let KVFiltered = Object.entries(row).map((kv) => {
+			return filters.includes(kv[0]) && kv[1] === true ? 1 : 0;
+		});
+		return KVFiltered.includes(1);
 	});
-	console.log('filterByFilters: ', { data: filteredData, filters: filters });
-	return filteredData;
 }
 
 function filterBySearchTerm(data, searchTerm) {
-	// console.log('filterBySearchTerm: ', data, searchTerm);
 	if (!searchTerm) return data;
-	const formattedTerm = searchTerm.toLowerCase().trim();
-
-	return data.filter((row) => {
-		const AtrrValues = Object.values(row);
-
-		return AtrrValues.includes(formattedTerm);
+	const formattedTerm = searchTerm.toLocaleLowerCase().trim();
+	let filteredData = data.filter((row) => {
+		let condition = Object.values(row).map((value) =>
+			String(value).toLocaleLowerCase().startsWith(formattedTerm)
+		);
+		return condition.includes(true);
 	});
+	console.log('filteredData: ', filteredData);
+	return filteredData;
 }
 
 // ACTIONS FOR FILTER
 export const addFilter = (el) => {
 	Filters.update(($Filters) => {
 		$Filters.push(el);
-		console.log('ACTION ADD FILTER', $Filters);
 		return $Filters;
 	});
 };
@@ -53,7 +69,6 @@ export const addFilter = (el) => {
 export const removeFilter = (el) => {
 	Filters.update(($Filters) => {
 		$Filters = $Filters.filter((e) => e !== el);
-		console.log('ACTION REMOVE FILTER', $Filters);
 		return $Filters;
 	});
 };
@@ -81,7 +96,6 @@ export function getBinanceDataCompleteAction(fetch) {
 	console.log('ACTION_GET_BINANCE_DATA');
 	BinanceData.update(($BinanceData) => {
 		$BinanceData.complete = fetch.symbols;
-		console.log('BinanceData', $BinanceData);
 		return $BinanceData;
 	});
 }
@@ -90,19 +104,13 @@ export function getBinanceDataBySymbolAction(fetch) {
 	console.log('ACTION_GET_BINANCE_DATA_BY_SYMBOL');
 	BinanceData.update(($BinanceData) => {
 		$BinanceData.bySymbol = fetch;
-		console.log('getBinanceDataBySymbolAction', $BinanceData);
 		return $BinanceData;
 	});
 }
 
 export const filterBinanceDataAction = (data, Filters) => {
-	// const filtered = data
-	// 	.map((row) => (row.map((atributte) => Filters.includes(atributte)) ? row : false))
-	// 	.filter(Boolean);
-	// console.log('ACTION_FILTER_DATA_BINANCE: ', filtered);
 	BinanceData.update(($BinanceData) => {
 		$BinanceData.bySymbol = fetch;
-		console.log('getBinanceDataBySymbolAction', $BinanceData);
 		return $BinanceData;
 	});
 	// return filtered;
