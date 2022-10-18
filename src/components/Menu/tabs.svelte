@@ -2,7 +2,6 @@
   import userStore,{ loginOutAction }from '../../stores/UserStore.js'
   import MultipleSelection from '../Exchange/MultipleSelection.component.svelte';
 
-let user = JSON.parse(localStorage.getItem('user'))? JSON.parse(localStorage.getItem('user')): userStore
 
 </script>
 

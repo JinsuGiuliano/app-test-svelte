@@ -1,7 +1,7 @@
 <script>
     export const ssr = false;
 	  import { afterUpdate, beforeUpdate, onMount, onDestroy } from "svelte";
-    import BinanceData, { fetchBinanceBySymbolData }  from '../../stores/dataStore'
+    import BinanceData, { fetchBinanceBySymbolData, CACHE_dataStore }  from '../../stores/dataStore'
     import { fetchKlinesNySymbolBinanceData, Symbol, socketBookTicker, socketDepth } from "../../stores/WebSocket";
     import SymbolRealTimeStats from "../Stats/SymbolRealTime.stats.svelte";
     import SymbolBookDepth from "../Stats/Symbol.bookDepth10.stats.svelte"
@@ -12,7 +12,10 @@
     let marketDetailsComponent;
 
     onMount(async()=>{   
+      if(!CACHE_dataStore.has(`BinanceData_symbol_${$Symbol}`)){
+        console.log(`BinanceData_symbol_${$Symbol}`)
          await fetchBinanceBySymbolData($Symbol)
+      }
          await fetchKlinesNySymbolBinanceData($Symbol)
          marketDetailsComponent = async () =>  await import('../Charts/symbol.details.candleTicks.chart.svelte')
     })

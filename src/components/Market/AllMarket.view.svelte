@@ -26,7 +26,7 @@
       <!-- svelte-ignore a11y-label-has-associated-control -->
       <label tabindex="0" class="btn btn-ghost btn-circle avatar">
            <div class="w-24 rounded">
-          <img src="/img/logo.jpg" />
+          <img src="/img/logo.png" />
         </div>
       </label>
       <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">

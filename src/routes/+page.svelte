@@ -5,12 +5,12 @@
 	  // import { onMount } from 'svelte';
 //     let logged = $userStore.profile.logged
 // $: userStoreCopy =  $userStore
-	$: user = $userStore
+
 
 </script>
 
 
-{#if user.profile.logged  }
+{#if $userStore  }
      <Main/>  
 {:else}
   <Login />

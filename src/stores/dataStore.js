@@ -1,6 +1,8 @@
 import { writable, derived } from 'svelte/store';
 import axios from 'axios';
 
+export const CACHE_dataStore = new Map();
+
 const BinanceData = writable({
 	complete: [],
 	bySymbol: []
@@ -75,27 +77,41 @@ export const removeFilter = (el) => {
 
 // ACTIONS FOR BINANCEDATA
 export const fetchBinanceData = async () => {
-	console.log('AXIOS GET COMPLETE BINANCE DATA');
-	await axios
-		.get('https://api.binance.com/api/v3/exchangeInfo')
-		.then((res) => {
-			let fetch = res.data;
-			getBinanceDataCompleteAction(fetch);
-		})
-		.catch((err) => console.log('ERROR fetchBinanceData: ', err.message));
+	console.log('AXIOS GET COMPLETE BINANCE DATA', CACHE_dataStore);
+	if (CACHE_dataStore.has('BinanceData_complete')) {
+		getBinanceDataCompleteAction(CACHE_dataStore.get('BinanceData_complete'));
+	} else {
+		await axios
+			.get('https://api.binance.com/api/v3/exchangeInfo')
+			.then((res) => {
+				let fetch = res.data.symbols;
+				CACHE_dataStore.set('BinanceData_complete', fetch);
+				getBinanceDataCompleteAction(fetch);
+			})
+			.catch((err) => console.log('ERROR fetchBinanceData: ', err.message));
+	}
 };
 
 export const fetchBinanceBySymbolData = async (symbol) => {
-	await axios
-		.get(`https://api.binance.com/api/v3/exchangeInfo?symbol=${symbol}`)
-		.then((res) => getBinanceDataBySymbolAction(res.data.symbols))
-		.catch((err) => console.log('ERROR fetchBinanceBySymbolData: ', err.message));
+	console.log('AXIOS GET BY SYMBOL BINANCE DATA', CACHE_dataStore);
+	if (CACHE_dataStore.has(`BinanceData_symbol_${symbol}`)) {
+		getBinanceDataBySymbolAction(CACHE_dataStore.get(`BinanceData_symbol_${symbol}`));
+	} else {
+		await axios
+			.get(`https://api.binance.com/api/v3/exchangeInfo?symbol=${symbol}`)
+			.then((res) => {
+				const fetch = res.data.symbols;
+				CACHE_dataStore.set(`BinanceData_symbol_${symbol}`, fetch);
+				getBinanceDataBySymbolAction(fetch);
+			})
+			.catch((err) => console.log('ERROR fetchBinanceBySymbolData: ', err.message));
+	}
 };
 
 export function getBinanceDataCompleteAction(fetch) {
 	console.log('ACTION_GET_BINANCE_DATA');
 	BinanceData.update(($BinanceData) => {
-		$BinanceData.complete = fetch.symbols;
+		$BinanceData.complete = fetch;
 		return $BinanceData;
 	});
 }
