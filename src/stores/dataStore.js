@@ -1,4 +1,5 @@
 import { writable, derived } from 'svelte/store';
+import { addAlert } from './alerts.store';
 import axios from 'axios';
 
 export const CACHE_dataStore = new Map();
@@ -87,8 +88,21 @@ export const fetchBinanceData = async () => {
 				let fetch = res.data.symbols;
 				CACHE_dataStore.set('BinanceData_complete', fetch);
 				getBinanceDataCompleteAction(fetch);
+				addAlert({
+					message: 'Succesfully fetch data from Binance',
+					type: 'info',
+					dismissible: true,
+					timeout: 3000
+				});
 			})
-			.catch((err) => console.log('ERROR fetchBinanceData: ', err.message));
+			.catch((err) => {
+				addAlert({
+					message: err.message,
+					type: 'error',
+					dismissible: true,
+					timeout: 3000
+				});
+			});
 	}
 };
 
