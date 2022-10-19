@@ -57,7 +57,6 @@ function filterBySearchTerm(data, searchTerm) {
 		);
 		return condition.includes(true);
 	});
-	console.log('filteredData: ', filteredData);
 	return filteredData;
 }
 
@@ -76,54 +75,32 @@ export const removeFilter = (el) => {
 	});
 };
 
-// ACTIONS FOR BINANCEDATA
-export const fetchBinanceData = async () => {
-	console.log('AXIOS GET COMPLETE BINANCE DATA', CACHE_dataStore);
-	if (CACHE_dataStore.has('BinanceData_complete')) {
-		getBinanceDataCompleteAction(CACHE_dataStore.get('BinanceData_complete'));
-	} else {
-		await axios
-			.get('https://api.binance.com/api/v3/exchangeInfo')
-			.then((res) => {
-				let fetch = res.data.symbols;
-				CACHE_dataStore.set('BinanceData_complete', fetch);
-				getBinanceDataCompleteAction(fetch);
-				addAlert({
-					message: 'Succesfully fetch data from Binance',
-					type: 'info',
-					dismissible: true,
-					timeout: 3000
-				});
-			})
-			.catch((err) => {
-				addAlert({
-					message: err.message,
-					type: 'error',
-					dismissible: true,
-					timeout: 3000
-				});
-			});
+export const fetchBinanceData = async (url, storeAttr) => {
+	if (CACHE_dataStore.has(url)) {
+		storeAttr !== 'complete'
+			? getBinanceDataBySymbolAction(CACHE_dataStore.get(url))
+			: getBinanceDataCompleteAction(CACHE_dataStore.get(url));
 	}
-};
-
-export const fetchBinanceBySymbolData = async (symbol) => {
-	console.log('AXIOS GET BY SYMBOL BINANCE DATA', CACHE_dataStore);
-	if (CACHE_dataStore.has(`BinanceData_symbol_${symbol}`)) {
-		getBinanceDataBySymbolAction(CACHE_dataStore.get(`BinanceData_symbol_${symbol}`));
-	} else {
-		await axios
-			.get(`https://api.binance.com/api/v3/exchangeInfo?symbol=${symbol}`)
-			.then((res) => {
-				const fetch = res.data.symbols;
-				CACHE_dataStore.set(`BinanceData_symbol_${symbol}`, fetch);
-				getBinanceDataBySymbolAction(fetch);
+	await axios
+		.get(url)
+		.then((res) => {
+			const fetch = res.data.symbols;
+			CACHE_dataStore.set(url, fetch);
+			storeAttr !== 'complete'
+				? getBinanceDataBySymbolAction(CACHE_dataStore.get(url))
+				: getBinanceDataCompleteAction(CACHE_dataStore.get(url));
+		})
+		.catch((err) =>
+			addAlert({
+				message: err.message,
+				type: 'error',
+				dismissible: true,
+				timeout: 3000
 			})
-			.catch((err) => console.log('ERROR fetchBinanceBySymbolData: ', err.message));
-	}
+		);
 };
 
 export function getBinanceDataCompleteAction(fetch) {
-	console.log('ACTION_GET_BINANCE_DATA');
 	BinanceData.update(($BinanceData) => {
 		$BinanceData.complete = fetch;
 		return $BinanceData;
@@ -131,7 +108,6 @@ export function getBinanceDataCompleteAction(fetch) {
 }
 
 export function getBinanceDataBySymbolAction(fetch) {
-	console.log('ACTION_GET_BINANCE_DATA_BY_SYMBOL');
 	BinanceData.update(($BinanceData) => {
 		$BinanceData.bySymbol = fetch;
 		return $BinanceData;

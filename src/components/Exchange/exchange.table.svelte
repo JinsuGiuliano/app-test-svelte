@@ -2,7 +2,7 @@
 
 <script>
   import { onMount } from 'svelte';
-  import BinanceData, { fetchBinanceBySymbolData, fetchBinanceData, BinanceDataFiltered, PercentageLoaded, CACHE_dataStore  } from '../../stores/dataStore'
+  import BinanceData, { fetchBinanceData, BinanceDataFiltered, PercentageLoaded, CACHE_dataStore  } from '../../stores/dataStore'
   import { connectWebSocketBookTicker, socketBookTicker, Symbol, setSymbol, socketDepth, connectWebSocketSocketDepth } from '../../stores/WebSocket'
   import OneRowData from '../Symbol/Symbol.view.svelte';
 
@@ -16,9 +16,8 @@ let OneRowDataSelected = false
 
 
  async function handleOneRow (sym){
- if(!CACHE_dataStore.has(`BinanceData_symbol_${sym}`)){
-       await fetchBinanceBySymbolData(sym)
-    }
+  
+    await fetchBinanceData(`https://api.binance.com/api/v3/exchangeInfo?symbol=${sym}`, 'symbol')
    
     setSymbol(sym)
     if (socketBookTicker && socketBookTicker.url.slice(33).split('@')[0] !== $Symbol.toLowerCase()) {
@@ -28,14 +27,12 @@ let OneRowDataSelected = false
       	socketDepth.close(1000)
     }
     connectWebSocketSocketDepth(sym)
-     connectWebSocketBookTicker(sym)
+    connectWebSocketBookTicker(sym)
 }
 
 
 	onMount(async () => {
-    if(!CACHE_dataStore.has('BinanceData_complete')){
-        await fetchBinanceData()
-    }
+        await fetchBinanceData('https://api.binance.com/api/v3/exchangeInfo', 'complete')
 	})
 
 console.log($PercentageLoaded)

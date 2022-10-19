@@ -1,5 +1,6 @@
 import { writable, derived } from 'svelte/store';
 // import { BinanceWSClient } from '../client/BinanceClient';
+import { addAlert } from './alerts.store';
 import axios from 'axios';
 
 export const SymbolTradeData = writable({});
@@ -105,7 +106,6 @@ export const setDataFromStream = (dataList) => {
 
 // ACTIONS FOR BINANCEDATA
 export const fetchKlinesNySymbolBinanceData = async (symbol) => {
-	console.log('AXIOS_GET_SYMBOL_KLINES_BINANCE_DATA', symbol);
 	await axios
 		.get(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1M`)
 		.then((res) => setDataFromStream(res.data))
@@ -114,75 +114,124 @@ export const fetchKlinesNySymbolBinanceData = async (symbol) => {
 
 export let socketBookTicker;
 export const connectWebSocketBookTicker = (Symbol) => {
-	// Create a new websocket
-	socketBookTicker = new WebSocket(
-		`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@bookTicker`
-	);
+	try {
+		// Create a new websocket
+		socketBookTicker = new WebSocket(
+			`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@bookTicker`
+		);
 
-	socketBookTicker.addEventListener('close', (event) => {
-		console.log('The connection to socketBookTicker has been CLOSED successfully.');
-	});
+		socketBookTicker.addEventListener('close', (event) => {
+			// console.log('The connection to socketBookTicker has been CLOSED successfully.');
+		});
 
-	socketBookTicker.addEventListener('open', () => {
-		console.log('The connection to socketBookTicker has OPEN successfully.');
-	});
+		socketBookTicker.addEventListener('open', () => {
+			// console.log('The connection to socketBookTicker has OPEN successfully.');
+		});
 
-	socketBookTicker.addEventListener('message', (event) => {
-		let stockObject = JSON.parse(event.data);
-		setSymbolPriceData(stockObject);
-	});
+		socketBookTicker.addEventListener('message', (event) => {
+			let stockObject = JSON.parse(event.data);
+			setSymbolPriceData(stockObject);
+		});
 
-	if (!socketBookTicker) {
-		setSymbolPriceData(' - ');
-		return;
+		if (!socketBookTicker) {
+			setSymbolPriceData(' - ');
+			return;
+		}
+	} catch (err) {
+		addAlert({
+			message: err.message,
+			type: 'error',
+			dismissible: true,
+			timeout: 3000
+		});
 	}
 };
 
 export let socketKline_;
 export const connectWebSocketSocketKline_ = (Symbol) => {
-	// Create a new websocket
-	socketKline_ = new WebSocket(`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@kline_1M`);
+	try {
+		// Create a new websocket
+		socketKline_ = new WebSocket(
+			`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@kline_1M`
+		);
 
-	socketKline_.addEventListener('close', (event) => {
-		console.log(`The connection for ${Symbol}  has been CLOSED successfully.`);
-	});
+		socketKline_.addEventListener('close', () => {
+			// addAlert({
+			// 	message: `The connection for socketKline_ ${Symbol}  has been CLOSED successfully.`,
+			// 	type: 'success',
+			// 	dismissible: true,
+			// 	timeout: 3000
+			// });
+		});
 
-	socketKline_.addEventListener('open', () => {
-		console.log(`The connection for ${Symbol}  has OPEN successfully.`);
-	});
+		socketKline_.addEventListener('open', () => {
+			// addAlert({
+			// 	message: `The connection for socketKline_ ${Symbol}  has OPEN successfully.`,
+			// 	type: 'success',
+			// 	dismissible: true,
+			// 	timeout: 3000
+			// });
+		});
 
-	socketKline_.addEventListener('message', (event) => {
-		let stockObject = JSON.parse(event.data);
-		setMarketSymbolPriceData(stockObject);
-		setMarketSymbolStats(stockObject);
-	});
+		socketKline_.addEventListener('message', (event) => {
+			let stockObject = JSON.parse(event.data);
+			setMarketSymbolPriceData(stockObject);
+			setMarketSymbolStats(stockObject);
+		});
 
-	if (!socketKline_) {
-		setMarketSymbolPriceData([]);
-		return;
+		if (!socketKline_) {
+			setMarketSymbolPriceData([]);
+			return;
+		}
+	} catch (err) {
+		addAlert({
+			message: err.message,
+			type: 'error',
+			dismissible: true,
+			timeout: 3000
+		});
 	}
 };
 
 export let socketDepth;
 export const connectWebSocketSocketDepth = (Symbol) => {
-	// Create a new websocket
-	socketDepth = new WebSocket(`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@depth10`);
+	try {
+		// Create a new websocket
+		socketDepth = new WebSocket(`wss://stream.binance.com:9443/ws/${Symbol.toLowerCase()}@depth10`);
 
-	socketDepth.addEventListener('close', (event) => {
-		console.log(`The connection for ${Symbol}  has been CLOSED successfully.`);
-	});
+		socketDepth.addEventListener('close', () => {
+			// addAlert({
+			// 	message: `The connection for socketDepth ${Symbol}  has been CLOSED successfully.`,
+			// 	type: 'success',
+			// 	dismissible: true,
+			// 	timeout: 3000
+			// });
+		});
 
-	socketDepth.addEventListener('open', () => {
-		console.log(`The connection for ${Symbol}  has OPEN successfully.`);
-	});
+		socketDepth.addEventListener('open', () => {
+			// addAlert({
+			// 	message: `The connection for socketDepth ${Symbol}  has OPEN successfully.`,
+			// 	type: 'success',
+			// 	dismissible: true,
+			// 	timeout: 3000
+			// });
+		});
 
-	socketDepth.addEventListener('message', (event) => {
-		let stockObject = JSON.parse(event.data);
-		setBookDepth(stockObject);
-	});
+		socketDepth.addEventListener('message', (event) => {
+			let stockObject = JSON.parse(event.data);
+			setBookDepth(stockObject);
+		});
 
-	if (!socketDepth) {
-		setBookDepth({});
-		return;
+		if (!socketDepth) {
+			setBookDepth({});
+			return;
+		}
+	} catch (err) {
+		addAlert({
+			message: err.message,
+			type: 'error',
+			dismissible: true,
+			timeout: 3000
+		});
 	}
 };
