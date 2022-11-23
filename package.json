@@ -12,6 +12,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-netlify": "^1.0.0-next.84",
 		"@sveltejs/kit": "next",
 		"@types/jquery": "^3.5.14",
 		"autoprefixer": "^10.4.12",
