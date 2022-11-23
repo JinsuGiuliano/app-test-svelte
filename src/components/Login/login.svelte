@@ -1,5 +1,5 @@
 <script>
-    import userStore, { loginAction } from '../../stores/UserStore.js'
+    import userStore, { loginAction } from '../../stores/userStore.js'
 </script>
 
 

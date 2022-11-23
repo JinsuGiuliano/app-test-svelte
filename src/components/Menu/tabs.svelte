@@ -1,5 +1,5 @@
 <script>
-  import userStore,{ loginOutAction }from '../../stores/UserStore.js'
+  import userStore,{ loginOutAction }from '../../stores/userStore.js'
   import MultipleSelection from '../Exchange/MultipleSelection.component.svelte';
 
 
