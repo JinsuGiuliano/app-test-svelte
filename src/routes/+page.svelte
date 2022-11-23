@@ -1,5 +1,5 @@
 <script >
-    import userStore from '../stores/UserStore.js'
+    import userStore from '../stores/userStore.js'
     import Login from "../components/Login/login.svelte";
     import Main from "../components/main.svelte";
     import Alerts from '../components/Alerts/Alerts.svelte'
